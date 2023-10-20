@@ -1,0 +1,1 @@
+import{_ as o,o as s,c as t,a as e,b as c}from"./_plugin-vue_export-helper-f6c737b5.js";import{_ as r}from"./logo-470f7689.js";const a={},_=e("img",{alt:"Vue logo",class:"logo",src:r,width:"125",height:"125"},null,-1),n=e("div",{class:"wrapper"}," Credit Inst ",-1),i=[_,n];function p(d,m){return s(),t("header",null,i)}const l=o(a,[["render",p]]);c(l).mount("#app");

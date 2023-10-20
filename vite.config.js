@@ -22,6 +22,7 @@ export default defineConfig({
     
     rollupOptions:{
       input: {
+        index:path.resolve(__dirname, 'src/index.html'),
         creditOnce:path.resolve(__dirname, 'src/payType/creditOnce/index.html'),
         creditInst:path.resolve(__dirname, './src/payType/creditInst/index.html'),
       },
