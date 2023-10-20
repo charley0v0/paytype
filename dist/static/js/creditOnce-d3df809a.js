@@ -1,0 +1,1 @@
+import{_ as s,o,c as t,a as e,b as c,d as a}from"./_plugin-vue_export-helper-e8ba468b.js";const r={},n=e("img",{alt:"Vue logo",class:"logo",src:c,width:"125",height:"125"},null,-1),_=e("div",{class:"wrapper"}," Credit Once ",-1),i=[n,_];function l(d,h){return o(),t("header",null,i)}const p=s(r,[["render",l]]);a(p).mount("#app");

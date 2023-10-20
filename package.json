@@ -1,0 +1,20 @@
+{
+  "name": "vue-sdk",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "once": "vite serve src/payType/creditOnce/ --config ./vite.config.js",
+    "inst": "vite serve src/payType/creditInst/ --config ./vite.config.js",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "pinia": "^2.1.6",
+    "vue": "^3.3.4"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^4.3.4",
+    "vite": "^4.4.9"
+  }
+}
