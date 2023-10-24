@@ -1,18 +1,22 @@
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
+  <div class="wrapper">
+    <div>
+      <CreditNumber />
 
-    <div class="wrapper">
-        Credit Once
     </div>
-  </header>
+   
+  </div>
 </template>
 
 
 <script setup>
-
+  import CreditNumber from '@/components/form/creditNumber.vue';
 </script>
 
 <style scoped>
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 </style>
