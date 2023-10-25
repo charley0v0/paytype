@@ -1,27 +1,25 @@
 <template>
-    <div>
-        <div class="my-2 border-2 rounded-md p-2 w-170 flex">
+    <div class="my-2 border-2 rounded-md p-2 w-350 flex justify-between">
+        <div class="flex">
+            <img src="@/assets/credit_type.png" class="h-20 mr-2">
             <CreditNumber />
         </div>
-        <div class="my-2 border-2 rounded-md p-2 w-170 flex">
+        <div class="w-60">
             <CreditExp />
         </div>
-        <div class="my-2 border-2 rounded-md p-2 w-170 flex">
-            <CreditCvc  />
-        </div>
     </div>
-   
 </template>
 
 
 <script setup>
     import { ref, reactive } from 'vue';
+
     import CreditNumber from '@/components/form/creditNumber.vue';
     import CreditExp from '@/components/form/creditExp.vue';
-    import CreditCvc from '@/components/form/creditCvc.vue';
-
+    
     const creditNmuber = ref('');
     const creditExp = ref('');
+
 </script>
 
 <style scoped>
@@ -30,7 +28,15 @@
 @tailwind components;
 @tailwind utilities;
 
-.w-170{
-    width:170px;
+.w-60{
+    width:60px;
+}
+
+.w-350{
+    width:350px;
+}
+
+.h-20{
+    height:20px;
 }
 </style>

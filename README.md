@@ -27,3 +27,17 @@ npm run dev
 ```sh
 npm run build
 ```
+
+#####  sdk folder
+
+src-
+    payType - 
+        creditAllinOne - one input field  with umber & exp
+        creditOnce - a page width threee field (number & exp cvc)
+        creditInst -  a page width threee field (number & exp cvc) and one select
+
+    field - 
+        number - one input field for number 
+        exp - one input field for expire date
+        cvc - one input field for cvc
+        

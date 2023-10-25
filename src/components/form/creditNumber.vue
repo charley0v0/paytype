@@ -2,7 +2,7 @@
     <input 
         type="text" 
         id="c-credit-number" 
-        class="border-0 focus:outline-0" 
+        class="border-0 w-full focus:outline-0" 
         v-model="inputNumber" 
         :placeholder="numberPlaceHolder" 
         maxlength="19" 
