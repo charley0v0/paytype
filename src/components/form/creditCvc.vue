@@ -1,6 +1,7 @@
 <template>
     <input  
-        type="text" 
+        type="text"
+        id="c-credit-cvc" 
         class="border-0 focus:outline-0 w-50" 
         v-model="inpuExp" 
         :placeholder="expPlaceHolder" 

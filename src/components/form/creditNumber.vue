@@ -1,6 +1,7 @@
 <template>
     <input 
         type="text" 
+        id="c-credit-number" 
         class="border-0 focus:outline-0" 
         v-model="inputNumber" 
         :placeholder="numberPlaceHolder" 
