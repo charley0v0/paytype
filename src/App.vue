@@ -8,13 +8,13 @@
     <body>
         <div>
             <h1>PayType SDK Demo</h1>
-            <h3>All In One</h3>
+            <h4>卡號 + 有效月年 同欄位</h4>
             <ul>
               <li><a href="/payType/creditAllinOne">信用卡欄位</a></li>
             </ul>
+            <h3>卡號 + 有效月年 + 背面三碼 區分欄位</h3>
             <ul>
               <li><a href="/payType/creditOnce">信用卡一次付清</a></li>
-              <li><a href="/payType/creditOnce">信用卡分期付款</a></li>
             </ul>
         </div>
         
@@ -28,5 +28,9 @@
 </script>
 
 <style scoped>
+  @import url('https://fonts.googleapis.com/earlyaccess/notosanstc.css');
 
+  body{
+    font-family: 'NOTO Sans TC', '微軟正黑體', sans-serif;
+  }
 </style>

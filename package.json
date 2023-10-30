@@ -6,7 +6,6 @@
     "dev": "vite serve src/ --config ./vite.config.js",
     "all": "vite serve src/payType/creditAllinOne/ --config ./vite.config.js",
     "once": "vite serve src/payType/creditOnce/ --config ./vite.config.js",
-    "inst": "vite serve src/payType/creditInst/ --config ./vite.config.js",
     "build": "vite build",
     "preview": "vite preview"
   },
