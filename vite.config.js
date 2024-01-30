@@ -1,13 +1,23 @@
-import { defineConfig, resolve } from 'vite';
-import path from 'path';
-
+import { defineConfig, resolve } from 'vite'
 import vue from '@vitejs/plugin-vue';
+import path from 'path';
+import {glob, globSync} from 'glob';
+
+function getInputEntries() {
+  const entries = {};
+  const htmlFiles = globSync('src/payType/**/index.html');
+
+  htmlFiles.forEach((file) => {
+    const key = `${file.split('\\')[2]}\/${file.split('\\')[3]}`;
+    entries[key] = path.resolve(__dirname, file);
+  });
+  return entries;
+}
 
 
 export default defineConfig({
   root:'./src/',
   base:'',
-  envDir:'../',
   plugins: [vue()],
   resolve: {
     alias: {
@@ -15,23 +25,18 @@ export default defineConfig({
     }
   },
   build:{
-   
     outDir:'../dist',
-    assetsDir:'../assets',
+    assetsDir:'assets',
     emptyOutDir:true,
-    
     rollupOptions:{
-      input: {
-        index:path.resolve(__dirname, 'src/index.html'),
-        creditAllinOne:path.resolve(__dirname, 'src/payType/creditAllinOne/index.html'),
-        creditOne:path.resolve(__dirname, './src/payType/creditOnce/index.html'),
-        creditInst:path.resolve(__dirname, './src/payType/creditInst/index.html'),
-      },
+      input: getInputEntries(),
       output: {
-        chunkFileNames: 'static/js/[name]-[hash].js',
-        entryFileNames: 'static/js/[name]-[hash].js',
-        assetFileNames: 'static/[ext]/[name]-[hash].[ext]'
+        dir: 'dist',
+        chunkFileNames: 'js/fakePay/js/[name]-[hash].js',
+        entryFileNames: 'js/fakePay/js/[name]-[hash].js',
+        assetFileNames: 'js/fakePay/[ext]/[name]-[hash].[ext]'
       }
     },
   }
 });
+

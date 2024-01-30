@@ -1,7 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    "./index.html",
+    "./src/payType/**/.{html,vue,js}",
     "./src/**/*.{vue,js}"
   ],
   theme: {
