@@ -5,7 +5,6 @@
         v-model="inputVal"
         :class="set_input_style" 
         :maxlength="maxLength"
-        :disabled="disabled"
         @input="update()"
     >
 </template>
@@ -15,22 +14,10 @@ import '../../assets/css/text-security';
 export default {
     name: 'input-tool',
     props: {
-        // defaultValue:{
-        //     type:String,
-        //     default: () => ''
-        // },
-        // textCenter:{
-        //     type:Boolean,
-        //     default: () => false
-        // },
         maxLength:{
             type:String,
             default: () => ''
         },
-        // disabled:{
-        //     type:Boolean,
-        //     default:() => false
-        // },
         input_style:{
             type:Object,
             default:() => {}

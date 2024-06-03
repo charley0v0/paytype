@@ -9,22 +9,14 @@ const routes = [
       activeMenuName: "payment"
     }
   },
-  // {
-  //   path: '/unionPay',
-  //   name: 'unionPay',
-  //   component: () => import('../views/unionPay.vue'),
-  //   meta:{
-  //     activeMenuName: "payment"
-  //   }
-  // },
-  // {
-  //   path: '/result',
-  //   name: 'result',
-  //   component: () => import('../views/Result.vue'),
-  //   meta:{
-  //     activeMenuName: "result"
-  //   }
-  // },
+  {
+    path: '/unionPay',
+    name: 'payment',
+    component: () => import('../views/unionPay.vue'),
+    meta:{
+      activeMenuName: "payment"
+    }
+  },
 ]
 
 const router = createRouter({

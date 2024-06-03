@@ -34,9 +34,20 @@ export default defineConfig({
         unionPay:path.resolve(__dirname, 'unionPay/index.html')
       },
       output: {
-          entryFileNames:'[name]/[name].js',
-          assetFileNames: 'assets/[name]-[hash][extname]'
-        }
+        dir: 'dist',
+        chunkFileNames: 'js/fakePay/js/[name]-[hash].js',
+        entryFileNames: 'js/fakePay/js/[name]-[hash].js',
+        assetFileNames: 'js/fakePay/[ext]/[name]-[hash].[ext]'
       }
-    },
+    }
+  },
+  server: {
+    proxy: {
+      '/nwj': {
+        target: 'https://1468-123-51-237-115.ngrok-free.app/NWPJCore/GPA',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/nwj/, '')
+      }
+    }
+  }
 })

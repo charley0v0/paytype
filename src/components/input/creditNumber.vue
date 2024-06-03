@@ -44,8 +44,8 @@
                 >
             </div>
             <div class="inline-flex items-center">
-                <img class='eyeicon inline-block' :src="'/src/assets/image/' + iconSrc + '.png'" @click="switchCardStatus"/>
-                <img src="../../assets/image/credit_type.png" class="credit_type ml-2 inline-block">
+                <img class='eyeicon inline-block' :src="showCardNumStatus ? hidePwd: showPwd" @click="switchCardStatus"/>
+                <img :src="creditTypeImg" class="credit_type ml-2 inline-block">
             </div>
         </div>
         <div class="flex flex-wrap-reverse" v-if="cardType == 'union'">
@@ -82,8 +82,8 @@
                 >
             </div>
             <div class="inline-flex items-center">
-                <img class='eyeicon inline-block' :src="'/src/assets/image/' + iconSrc + '.png'" @click="switchCardStatus"/>
-                <img src="../../assets/image/unionpay.png" class="credit_type ml-2 inline-block">
+                <img class='eyeicon inline-block' :src="showCardNumStatus ? hidePwd: showPwd" @click="switchCardStatus"/>
+                <img :src="unionpayImg" class="credit_type ml-2 inline-block">
             </div>
         </div>
     </div>
@@ -92,6 +92,10 @@
 
 <script>
 import '../../assets/css/text-security';
+import creditType from '@/assets/image/credit_type.png';
+import unionpay from '@/assets/image/unionpay.png';
+import eye from '@/assets/image/eye.png';
+import eyeSlash from '@/assets/image/eye_slash.png';
 
 export default {
     data:() =>({
@@ -109,7 +113,11 @@ export default {
         card2:'',
         card3:'',
         card4:'',
-        src1:''
+        src1:'',
+        showPwd:eye,
+        hidePwd:eyeSlash,
+        creditTypeImg:creditType,
+        unionpayImg:unionpay
     }),
     props:['input_style','cardType'],
     methods: {
@@ -130,15 +138,6 @@ export default {
                             this.$refs[`card${nextInputNum}`].focus();
                         }
                     }
-
-                    switch(this.cardType){
-                        case '':
-                        this.creditNumber = this.card1 + this.card2 + this.card3 +  this.card4;
-                        case 'union':
-                        this.creditNumber = this.card1 + this.card2 + this.card3;
-                    }
-
-                    this.$emit('input', this.creditNumber);
                 }
         },
         switchCardStatus(){
@@ -147,10 +146,14 @@ export default {
     },
     watch:{
         creditNumber(val){
-            if(val.length >= 16){
+            if(val.length){
                 this.$emit('getInput', val);
             }
+        },
+        fullCreditNumber(val){
+            this.creditNumber = val;
         }
+
     },
     computed:{
         set_input_style(){
@@ -164,6 +167,9 @@ export default {
         },
         iconSrc(){
             return this.showCardNumStatus == false ? 'eye' : 'eye_slash';
+        },
+        fullCreditNumber(){
+            return this.card1 + this.card2 + this.card3 +  this.card4;
         }
     }
 }

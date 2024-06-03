@@ -1,58 +1,51 @@
 <template>
 <div class="p-3">
-        <div class="mb-5 flex flex-wrap">
-            <div id="creditNumber" class="text-gray-700 text-base font-medium mr-3 payinfo_title">信用卡號：</div>
-            <creditNumber :input_style="input_style_" v-model="creditNumber" @getInput="getCreditNunber"  :cardType="''"/>
+        <div class="mb-5  field_div flex-wrap">
+            <div id="creditNumber" class="text-gray-700 text-base font-medium mr-3 payinfo_title">信用卡號</div>
+            <creditNumber :input_style="input_style_" v-model="submitData.PN" @getInput="getCreditNunber"  :cardType="''"/>
         </div>
-        <div class="mb-5 flex flex-wrap">
-            <div id="expireDate" class="text-gray-700 text-base font-medium mr-3 payinfo_title pt-1">有效月年：</div>
+        <div class="mb-5 field_div flex-wrap">
+            <div id="expireDate" class="text-gray-700 text-base font-medium mr-3 payinfo_title pt-1">有效月年</div>
             <div class="inline-block align-top maxw-470">
                 <expireInput class="w-24" :input_style="input_style_" v-model="creditLimit"/>
                 <div class="inline-block warning_notice_color font-semibold text-sm text-red-500" v-if="showExpiryError">卡片到期日錯誤</div>
             </div>
         </div>
-        <div class="mb-2 flex items-center flex-wrap">
-            <div id="cvcNumber" class="text-gray-700 text-base font-medium mr-3 payinfo_title">背面末三碼：</div>
-            <cvc-input class="w-24" v-model="cvcNumber" :textCenter="true" :maxLength="'3'" :input_style="input_style_"></cvc-input>
-            <img src="../assets/image/credit.png" class="credit_icon ml-3 inline-block">
+        <div class="mb-2 field_div items-center flex-wrap">
+            <div id="cvcNumber" class="text-gray-700 text-base font-medium mr-3 payinfo_title">背面末三碼</div>
+            <cvc-input class="w-24" v-model="submitData.CV" :textCenter="true" :maxLength="'3'" :input_style="input_style_"></cvc-input>
+            <img :src="cvcImg" class="credit_icon ml-3 inline-block">
         </div>
-        <div class="addToken flex lg:ml-10 mb-5">
-            <label class="flex items-start">
-                <input type="checkbox" v-model="AddNewToken" class="mt-1 mr-1" id="agreeToken">
-                <span class="notice_color font-semibold text-sm">我同意綁定本信用卡，並設定為快速結帳(可節省下次結帳時間，並保有刪除之權益)</span>
-            </label>
-        </div>
-        <div class="text-wrap font-semibold flex lg:ml-10">本公司採用藍新科技SSL交易系統，通過PCI-DSS 3.2.1支付卡產業資料安全標準認證，周全保護您的信用卡資料安全</div>
+        <div class="text-wrap font-semibold flex text-sm text-red mb-5">本公司採用藍新科技SSL交易系統，通過PCI-DSS 3.2.1支付卡產業資料安全標準認證，周全保護您的信用卡資料安全</div>
+        <button @click="checkInfo()">取得prime</button>
     </div>
 </template>
 
 
 <script>
+import axios from 'axios';
 import creditNumber from '../components/input/creditNumber.vue';
 import expireInput from '../components/input/expire.vue';
 import cvcInput from '../components/input/cvc.vue';
+import cvc from '@/assets/image/credit.png';
 
 export default {
     data:() =>({
-        placeholder:{
-            creditNumber:''
-        },
-        creditNumber:'',
+        cvcImg:cvc,
         creditLimit:'',
-        cvcNumber:'',
-        //new add
-        memeryCardNum:'',
+        hashKey:'',
+        parentUrl:'',
         input_style_:{
             input_bgc:'input_bgc',
             input_color:'input_color',
             input_border:'input_border'
         },
         submitData:{
-            number:'',//信用卡號
-            LimitMY:'',//信用卡有效月年
-            cvc:'',//背面末三碼
+            PN:'',
+            EDate:'',
+            CV:'',
         },
-        showExpiryError:false
+        showExpiryError:false,
     }),
     components:{
         expireInput,
@@ -60,30 +53,72 @@ export default {
         creditNumber
     },
     methods: {
+        //同步組件卡號
         getCreditNunber(v){
-            this.creditNumber = v;
+            this.submitData.PN = v;
+        },
+        //卡號換取Prime
+        checkInfo(){
+            const url = '/nwj';
+            // const url = 'https://1468-123-51-237-115.ngrok-free.app/NWPJCore/GPA';
+            const parentUrl = this.parentUrl ? this.parentUrl : 'https://lwww.newebpay.com/website/Fake_tappay/ClientView';
+            const hashKey = this.hashKey ? this.hashKey : '0Y67zd5tiabchL1OspVkQIFym42qfyMf';
+            axios.post(url, this.submitData, {
+                headers: {
+                    'Authorization': `Bearer ${hashKey}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                //將回傳參數傳遞到父頁面
+                if(window.parent.location.href == this.parentUrl){
+                    if(response.data.responseCode == '0000'){
+                        window.parent.postMessage(response.data,parentUrl);
+                    }else{
+                        //測試用
+                        setTimeout(()=>{
+                            window.parent.postMessage('charley',parentUrl);
+                        },8000)
+                    }
+                }               
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
         }
     },
     watch:{
-        'submitData.LimitMY':function(){
+        'submitData.EDate':function(){
             // 檢查月
-            let cvsM = Number(this.submitData.LimitMY.substring(0,2));
+            let cvsM = Number(this.submitData.EDate.substring(0,2));
             //檢查年
             let nowDay = new Date();
             let nowYear = String(nowDay.getFullYear()).substring(2,4);
-            let cvsY = Number(this.submitData.LimitMY.substring(2,4));
+            let cvsY = Number(this.submitData.EDate.substring(2,4));
             this.showExpiryError = Boolean(cvsM == 0 || cvsM > 12) || Boolean(cvsY < nowYear);
         },
     },
+    created(){
+        window.addEventListener('message',(event)=>{
+            if(event){
+                this.hashKey = event.data.hashKey;
+                this.parentUrl = event.data.parentUrl;
+                this.checkInfo();
+            }
+        });
+    },
     updated(){
-        this.submitData.number = this.creditNumber;
-        this.submitData.LimitMY = this.creditLimit.split('/').join('');
+        this.submitData.EDate = this.creditLimit.split('/').join('');
     },
 }
 
 </script>
 
 <style lang="scss">
+    .field_div{
+        display:flex;
+    }
+
     .cantWatchCardNum{
         cursor: not-allowed;
     }
@@ -112,11 +147,28 @@ export default {
         color:#666666;
     }
 
+    .text-red{
+        color:#DC493F;
+    }
+
+    .bg-blue-nwp{
+        background:#1D2A73;
+    }
+
+    .w-250{
+        width:250px;
+    }
+
+    .checkout_btn{
+        width:100%;
+        max-width:515px;
+    }
+
     @media screen and (min-width:1024px){
         .payinfo_title{
             display:inline-block;
             text-align: right;
-            width:135px;
+            width:96px;
         }
 
         .maxw-470{
@@ -124,9 +176,14 @@ export default {
         }
     }
 
-    @media screen and (max-width:640px){
-        .credit_div{
-            width:100%;
+    @media screen and (max-width:500px){
+        .field_div{
+            display:block;
+        }
+
+        .payinfo_title{
+            width:fit-content;
+            text-align:left;
         }
     }
 
