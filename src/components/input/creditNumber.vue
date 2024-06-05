@@ -11,7 +11,7 @@
                     ref="card1"
                     v-model="card1"
                     @keyup="checkLength(1)"
-                >-
+                > -
                 <input type='tel' class='inline-block appearance-none border-2 border-gray-600 rounded  
                     py-1 px-1 text-blue-nwp leading-tight font-semibold focus:outline-none focus:border-gray-800'
                     style="width:60px;"
@@ -21,7 +21,7 @@
                     ref="card2"
                     v-model="card2"
                     @keyup="checkLength(2)"
-                >-
+                > -
                 <input type='tel' class='inline-block appearance-none border-2 border-gray-600 rounded  
                     py-1 px-1 text-blue-nwp leading-tight font-semibold focus:outline-none focus:border-gray-800'
                     style="width:60px;"
@@ -31,7 +31,7 @@
                     ref="card3"
                     v-model="card3"
                     @keyup="checkLength(3)"
-                >-
+                > -
                 <input type="tel" class='inline-block appearance-none border-2 border-gray-600 rounded 
                     py-1 px-1 text-blue-nwp leading-tight font-semibold focus:outline-none focus:border-gray-800'
                     style="width:60px;"
@@ -152,6 +152,9 @@ export default {
         },
         fullCreditNumber(val){
             this.creditNumber = val;
+        },
+        showCardNumStatus(val){
+            this.$emit('showNumber', val);
         }
 
     },

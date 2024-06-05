@@ -31,13 +31,13 @@ export default defineConfig({
     rollupOptions:{
       input:{
         creditOncePay:path.resolve(__dirname, 'creditOncePay/index.html'),
-        unionPay:path.resolve(__dirname, 'unionPay/index.html')
+        // unionPay:path.resolve(__dirname, 'unionPay/index.html')
       },
       output: {
         dir: 'dist',
-        chunkFileNames: 'js/fakePay/js/[name]-[hash].js',
-        entryFileNames: 'js/fakePay/js/[name]-[hash].js',
-        assetFileNames: 'js/fakePay/[ext]/[name]-[hash].[ext]'
+        chunkFileNames: 'NWPJCore/js/[name]-[hash].js',
+        entryFileNames: 'NWPJCore/js/[name]-[hash].js',
+        assetFileNames: 'NWPJCore/[ext]/[name]-[hash].[ext]'
       }
     }
   },
