@@ -51,7 +51,8 @@ export default {
             CV:'',
         },
         showExpiryError:false,
-        inputStyleObj:{}
+        inputStyleObj:{},
+        titleStyleObj:{},
     }),
     components:{
         expireInput,
@@ -69,9 +70,9 @@ export default {
         },
         //卡號換取Prime
         checkInfo(){
-            const url = 'https://c-inframe.newebpay.com/NWPJCore/GPA';
-            const parentUrl = this.parentUrl ? this.parentUrl : '';
-            const hashKey = this.hashKey ? this.hashKey : '';
+            const url = this.env == 'production' ? 'https://p-inframe.newebpay.com/NWPJCore/GPA' : 'https://c-inframe.newebpay.com/NWPJCore/GPA';
+            const parentUrl = this.parentUrl;
+            const hashKey = this.hashKey;
             axios.post(url, this.submitData, {
                 headers: {
                     'Authorization': `Bearer ${hashKey}`,
@@ -80,9 +81,7 @@ export default {
             })
             .then(response => {
                 //將回傳參數傳遞到父頁面
-                if(window.parent.location.href == this.parentUrl){
-                    window.parent.postMessage(response.data,parentUrl);
-                }               
+                window.parent.postMessage(response.data,parentUrl);               
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -96,37 +95,18 @@ export default {
             let input4 = document.getElementById('card4');
             let expireDate = document.getElementById('expireDateInput');
             let cvcNumber = document.getElementById('cvcNumberInput');
-   
             for(const [key,value] of Object.entries(inputStyle)){
-                switch(key){
-                    case "creditNumber":
-                        for(const [keyC,valueC] of Object.entries(value)){
-                            input1.style[keyC] = valueC;
-                            input2.style[keyC] = valueC;
-                            input3.style[keyC] = valueC;
-                            input4.style[keyC] = valueC;
-                        }
-                        break;
-                    case "expireDate":
-                        for(const [keyE,valueE] of Object.entries(value)){
-                            expireDate.style[keyE] = valueE;
-                        }
-                        break;
-                    case "cvcNumber":
-                        for(const [keyV,valueV] of Object.entries(value)){
-                            cvcNumber.style[keyV] = valueV;
-                        }
-                        break;
-                    default:
-                        input1.style[key] = value;
-                        input2.style[key] = value;
-                        input3.style[key] = value;
-                        input4.style[key] = value;
-                        expireDate.style[key] = value;
-                        cvcNumber.style[key] = value;
-                        this.setInputClass();
-                        break;
+                if(key == 'fontFamily'){
+                    this.setFontFamily();
+                }else{
+                    input1.style[key] = value;
+                    input2.style[key] = value;
+                    input3.style[key] = value;
+                    input4.style[key] = value;
+                    expireDate.style[key] = value;
+                    cvcNumber.style[key] = value;
                 }
+            }
     
                 //欄位事件
                 // let AllInputData = [input1,input2,input3,input4,expireDate,cvcNumber];
@@ -149,7 +129,6 @@ export default {
                 //         }
                 //     }
                 // }
-            }
         },
         //設定標題
         setTitleStyle(titleStyle){
@@ -170,27 +149,28 @@ export default {
             }             
         },
         //有傳入字體樣式時，判斷為隱碼時切換字體
-        setInputClass(){ 
+        setFontFamily(){ 
+            let input1 = document.getElementById('card1');
             let input2 = document.getElementById('card2');
             let input3 = document.getElementById('card3');
+            let input4 = document.getElementById('card4');
 
-            if(!this.showStatus){
-                input2.style.fontFamily = 'text-security-disc';
-                input3.style.fontFamily = 'text-security-disc'
-            }else{
-                // if(setInputStyle){
-                //     input2.style.fontFamily = setInputStyle.fontFamily;
-                //     input3.style.fontFamily = setInputStyle.fontFamily;
-                // }else{
-                //     input2.style.fontFamily = 'inherit';
-                //     input3.style.fontFamily = 'inherit';
-                // }
-
-                // if(setInputStyle && setInputStyle.hasOwnProperty('cardNumber')){
-                //     input2.style.fontFamily = 'inherit';
-                //     input3.style.fontFamily = 'inherit';
-                // }
+            if(Object.keys(this.inputStyleObj).length){
+                if(this.inputStyleObj.hasOwnProperty('fontFamily')){
+                    input1.style.fontFamily = this.inputStyleObj.fontFamily;
+                    input4.style.fontFamily = this.inputStyleObj.fontFamily;
+                    if(!this.showStatus){
+                        //隱碼
+                        input2.style.fontFamily = 'text-security-disc';
+                        input3.style.fontFamily = 'text-security-disc'
+                    }else{
+                        //明碼
+                        input2.style.fontFamily = this.inputStyleObj.fontFamily;
+                        input3.style.fontFamily = this.inputStyleObj.fontFamily;
+                    }
+                }
             }
+           
         }
     },
     watch:{
@@ -204,55 +184,40 @@ export default {
             this.showExpiryError = Boolean(cvsM == 0 || cvsM > 12) || Boolean(cvsY < nowYear);
         },
         showStatus(){
-            this.setInputClass();
+            this.setFontFamily();
         }
     },
-    mounted(){
-        // let customStyle = {
-        //     inputStyle:{
-        //         // 修改樣式(整體)
-        //         fontSize:'14px',
-        //         fontWeight:'500',
-        //         lineHeight:'1.5',
-        //         color:'#55555',
-        //         creditNumber:{
-        //             color:'red',
-        //         }
-        //     },
-        //     titleStyle:{
-        //         title:{
-        //             creditNumber:'信用卡號',
-        //         },
-        //         style:{
-        //             color:'red'
-        //         }
-        //     }
-        // }
-        // this.setInputStyle(customStyle.inputStyle);
-        // this.setTitleStyle(customStyle.titleStyle);
-
+    created(){
         window.addEventListener('message',(event)=>{
             const msgData = event.data;
             if(msgData.type == 'getPrime'){
                 if(msgData.data){
-                    this.hashKey = msgData.data.hashKey;
-                    this.parentUrl = msgData.data.parentUrl;
+                    this.env = msgData.data.env ? msgData.data.env : 'test';
+                    this.hashKey = msgData.data.hashKey ? msgData.data.hashKey : '';
+                    this.parentUrl = msgData.data.parentUrl ? msgData.data.parentUrl : '';
                     this.checkInfo();
                 }
             }
             if(msgData.type == 'setStyle'){
                 //設定輸入框
-                if(msgData.setInputStyle){
+                if(msgData.inputStyle){
                     this.inputStyleObj = msgData.inputStyle;
-                    this.setInputStyle(msgData.inputStyle);
                 }
 
                 //設定標題
-                if(msgData.setTitleStyle){
-                    this.setTitleStyle(msgData.titleStyle);
+                if(msgData.titleStyle){
+                    this.titleStyleObj = msgData.titleStyle;
+                }
+            }
+            this.$nextTick(() => {
+                if(Object.keys(this.inputStyleObj).length){
+                    this.setInputStyle(this.inputStyleObj);
                 }
 
-            }
+                if(Object.keys(this.titleStyleObj).length){
+                    this.setTitleStyle(this.titleStyleObj);
+                }
+            })
         });
     },
     updated(){
