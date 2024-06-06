@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>NewebPay嵌入式SDK教學文件</title>
+    <link rel="stylesheet" href="docs.css">
+</head>
+<body>
+	<header>NewebPay嵌入式SDK教學文件</header>
+	<main>
+		<h2>需求</h2>
+		<p class="mb-50">需透過藍新金流註冊並建立商店後，取得商店代號(MerchantID)、HashKey及HashIv。</p>
+	
+		<h2>主要步驟</h2>
+		<ul class="mb-50">
+			<li>引用 SDK</li>
+			<li>於用戶端 前端頁面 中要顯示 卡號相關欄位 的地方加入指定id的區塊</li>
+			<li>呼叫SDK <span class="text-red">設定卡號</span> 函式並設定基本樣式</li>
+			<li>於送出交易前呼叫 SDK <span class="text-red">取得Prime</span> 函式</li>
+			<li>連同接收回傳之 Prime 一併送往對應api</li>
+		</ul>
+
+		<h2>教學</h2>
+		<div class="step">
+			<h4>引用SDK</h4>
+			<div class="code">
+				<img src="img/01.png" alt="引用SDK">
+			</div>
+		</div>
+		<div class="step">
+			<h4>於用戶端 前端頁面 中要顯示 卡號相關欄位 的地方加入<span class="text-red">div#credit_once_pay</span></h4>
+			<div class="code">
+				<img src="img/02.png" alt="建立容器">
+			</div>
+			<div class="ft-14">註：卡號相關iframe預設寬度跟隨父層容器，此例中父層容器為div.iframe-area</div>
+		</div>
+		<div class="step">
+			<h4>呼叫 <span class="text-red">NewebPaySDK.setCardOncePay()</span> 並帶入指定樣式建立卡號相關欄位</h4>
+			<div class="code">
+				<img src="img/03.png" alt="建立卡號相關欄位">
+			</div>
+			<table width="100%">
+				<tbody>
+					<tr>
+						<td class="th">參數</td>
+						<td class="th">屬性</td>
+						<td class="th text-center">必要</td>
+						<td class="th">描述</td>
+					</tr>
+					<tr>
+						<td rowspan="2">customStyle</td>
+						<td>inputStyle</td>
+						<td class="text-center">N</td>
+						<td>
+							<div>設定整體輸入框樣式，接受css屬性值(需使用駝峰形式)</div>
+						</td>
+					</tr>
+					<tr>
+						<td>titleStyle</td>
+						<td class="text-center">N</td>
+						<td>
+							<div>設定整體標題樣式，接受 title 及 style 屬性</div>
+							<div>若需設定部分標題文字請帶入 title 屬性：</div>
+							<table width="100%">
+								<tbody>
+									<tr>
+										<td class="th" colspan="2">屬性</td>
+										<td class="th text-center">必要</td>
+										<td class="th">描述</td>
+									</tr>
+									<tr>
+										<td rowspan="3">title</td>
+										<td>creditNumber</td>
+										<td class="text-center">N</td>
+										<td>卡號標題</td>
+									</tr>
+									<tr>
+										<td>expireDate</td>
+										<td class="text-center">N</td>
+										<td>有效月年標題</td>
+									</tr>
+									<tr>
+										<td>cvcNumber</td>
+										<td class="text-center">N</td>
+										<td>背面末三碼標題</td>
+									</tr>
+									<tr>
+										<td colspan="2">style</td>
+										<td class="text-center">N</td>
+										<td>設定標題統一樣式(需使用駝峰形式)</td>
+									</tr>
+								</tbody>
+								
+							</table>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="step">
+			<h4>預設顯示樣式(寬)</h4>
+			<div class="preview">
+				<img src="img/04.png" alt="寬版">
+			</div>
+		</div>
+		<div class="step">
+			<h4>預設顯示樣式(窄)</h4>
+			<div class="preview">
+				<img src="img/05.png" alt="窄版">
+			</div>
+		</div>
+		<div class="step">
+			<h4 class="mb-15">呼叫 <span class="text-red">NewebPaySDK.getPrime()</span> 取得Prime</h4>
+			<p>將卡號欄位填寫完畢後，於送出交易前呼叫 <span class="text-red">NewebPaySDK.getPrime()</span> 並帶入 <span class="text-red">HashKey</span> 及 <span class="text-red">Env</span> 取得Prime。</p>
+			<div class="code">
+				<img src="img/06.png" alt="取得Prime">
+			</div>
+			<h4 class="mb-15">Request</h4>
+			<table width="100%" class="mb-15">
+				<tbody>
+					<tr>
+						<td class="th">參數</td>
+						<td class="th text-center">必要</td>
+						<td class="th">描述</td>
+					</tr>
+					<tr>
+						<td>HashKey</td>
+						<td class="text-center">Y</td>
+						<td>
+							<div>透過藍新金流註冊並建立商店後，取得商店之HashKey</div>
+						</td>
+					</tr>
+					<tr>
+						<td>Env</td>
+						<td class="text-center">Y</td>
+						<td>
+							<div>測試階段請帶入 <span class="text-red">test</span></div>
+							<div>生產階段請帶入 <span class="text-red">production</span></div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<h4 class="mb-15">Response</h4>
+			<table width="100%" >
+				<tbody>
+					<tr>
+						<td class="th">參數</td>
+						<td class="th">描述</td>
+					</tr>
+					<tr>
+						<td>responseCode</td>
+						<td>
+							<div>成功時回傳<span class="text-red">0000</span></div>
+						</td>
+					</tr>
+					<tr>
+						<td>resMessage</td>
+						<td>
+							<div>回應訊息</div>
+						</td>
+					</tr>
+					<tr>
+						<td>prime</td>
+						<td>
+							<div>當 responseCode 為<span class="text-red">0000</span>時回傳prime</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+		<h2>補充說明</h2>
+		<p>SDK.js於封裝前已進行混淆加密，阻礙程式閱讀性及邏輯判斷。</p>
+		<br>
+		<h4>混淆前範例：</h4>
+		<img class="mb-15 w-full" src="img/07.png" alt="混淆前">
+		<br>
+		<h4>混淆後範例：</h4>
+		<img class="mb-15 w-full" src="img/08.png" alt="混淆後">
+
+	</main>
+</body>
+</html>
