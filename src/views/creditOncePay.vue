@@ -1,8 +1,13 @@
 <template>
     <div class="p-3">
-        <div class="mb-5  field_div flex-wrap">
-            <div id="creditNumber" class="text-gray-700 text-base font-medium mr-3 payinfo_title">{{title.creditNumber}}</div>
-            <creditNumber :input_style="input_style_" v-model="submitData.PN" @getInput="getCreditNunber" @showNumber="setShowStatus" :cardType="''"/>
+        <div class="mb-5 field_div flex-wrap">
+            <div id="creditNumber" class="text-gray-700 text-base font-medium mr-3 payinfo_title pt-1">{{title.creditNumber}}</div>
+            <div>
+                <div>
+                    <creditNumber :input_style="input_style_" v-model="submitData.PN" @getInput="getCreditNunber" @showNumber="setShowStatus" :cardType="''"/>
+                </div>
+                <div class="inline-block warning_notice_color font-semibold text-sm text-red-500" v-if="showNumberError">請輸入完整卡號</div>
+            </div>
         </div>
         <div class="mb-5 field_div flex-wrap">
             <div id="expireDate" class="text-gray-700 text-base font-medium mr-3 payinfo_title pt-1">{{title.expireDate}}</div>
@@ -11,10 +16,15 @@
                 <div class="inline-block warning_notice_color font-semibold text-sm text-red-500" v-if="showExpiryError">請輸入完整有效月年</div>
             </div>
         </div>
-        <div class="mb-2 field_div items-center flex-wrap">
-            <div id="cvcNumber" class="text-gray-700 text-base font-medium mr-3 payinfo_title">{{title.cvcNumber}}</div>
-            <cvc-input class="w-24" v-model="submitData.CV" :textCenter="true" :maxLength="'3'" :input_style="input_style_"></cvc-input>
-            <img :src="cvcImg" class="credit_icon ml-3 inline-block">
+        <div class="mb-2 field_div flex-wrap">
+            <div id="cvcNumber" class="text-gray-700 text-base font-medium mr-3 payinfo_title pt-1">{{title.cvcNumber}}</div>
+            <div>
+                <div>
+                    <cvc-input class="w-24" v-model="submitData.CV" :textCenter="true" :maxLength="'3'" :input_style="input_style_"></cvc-input>
+                    <img :src="cvcImg" class="credit_icon ml-3 inline-block">
+                </div>
+                <div class="inline-block warning_notice_color font-semibold text-sm text-red-500" v-if="showCvcError">請輸入完整末三碼</div>
+            </div>  
         </div>
         <div class="text-wrap font-semibold flex text-sm text-red mb-5">本公司採用藍新科技SSL交易系統，通過PCI-DSS 3.2.1支付卡產業資料安全標準認證，周全保護您的信用卡資料安全</div>
     </div>
@@ -50,7 +60,9 @@ export default {
             EDate:'',
             CV:'',
         },
+        showNumberError:false,
         showExpiryError:false,
+        showCvcError:false,
         inputStyleObj:{},
         titleStyleObj:{},
     }),
@@ -70,22 +82,28 @@ export default {
         },
         //卡號換取Prime
         checkInfo(){
-            const url = this.env == 'production' ? 'https://p-inframe.newebpay.com/NWPJCore/GPA' : 'https://c-inframe.newebpay.com/NWPJCore/GPA';
-            const parentUrl = this.parentUrl;
-            const hashKey = this.hashKey;
-            axios.post(url, this.submitData, {
-                headers: {
-                    'Authorization': `Bearer ${hashKey}`,
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => {
-                //將回傳參數傳遞到父頁面
-                window.parent.postMessage(response.data,parentUrl);               
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
+            this.checkNumber();
+            this.checkEDate();
+            this.checkCvc();
+            
+            if(this.checkNumber() && this.checkEDate() && this.checkCvc()){
+                const url = this.env == 'production' ? 'https://p-inframe.newebpay.com/NWPJCore/GPA' : 'https://c-inframe.newebpay.com/NWPJCore/GPA';
+                const parentUrl = this.parentUrl;
+                const hashKey = this.hashKey;
+                axios.post(url, this.submitData, {
+                    headers: {
+                        'Authorization': `Bearer ${hashKey}`,
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => {
+                    //將回傳參數傳遞到父頁面
+                    window.parent.postMessage(response.data,parentUrl);               
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            }
         },
         //設定輸入框
         setInputStyle(inputStyle){
@@ -171,10 +189,9 @@ export default {
                 }
             }
            
-        }
-    },
-    watch:{
-        'submitData.EDate':function(){
+        },
+        //檢查有效月年
+        checkEDate(){
             // 檢查月
             let cvsM = Number(this.submitData.EDate.substring(0,2));
             //檢查年
@@ -182,7 +199,20 @@ export default {
             let nowYear = String(nowDay.getFullYear()).substring(2,4);
             let cvsY = Number(this.submitData.EDate.substring(2,4));
             this.showExpiryError = Boolean(cvsM == 0 || cvsM > 12) || Boolean(cvsY < nowYear);
+            return !this.showExpiryError;
         },
+        //檢查背面末三碼
+        checkCvc(){
+            this.showCvcError = this.submitData.CV.length < 3;
+            return !this.showCvcError;
+        },
+        //檢查卡號
+        checkNumber(){
+            this.showNumberError = this.submitData.PN.length != 16;
+            return !this.showNumberError;
+        }
+    },
+    watch:{
         showStatus(){
             this.setFontFamily();
         }

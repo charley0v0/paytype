@@ -30,7 +30,7 @@ export default defineConfig({
   build:{
     rollupOptions:{
       input:{
-        creditOncePay:path.resolve(__dirname, 'creditOncePay/index.html'),
+        creditOncePay:path.resolve(__dirname, 'creditOncePay/nwpPayment.html'),
         // unionPay:path.resolve(__dirname, 'unionPay/index.html')
       },
       output: {
