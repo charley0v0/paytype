@@ -48,7 +48,15 @@
 						<td class="th">描述</td>
 					</tr>
 					<tr>
-						<td rowspan="2">customStyle</td>
+						<td>env</td>
+						<td>-</td>
+						<td class="text-center">Y</td>
+						<td>
+							<div>設定iframe環境(測試環境請帶 "test" ， 正式環境請帶 "production" )</div>
+						</td>
+					</tr>
+					<tr>
+						<td rowspan="3">customStyle</td>
 						<td>inputStyle</td>
 						<td class="text-center">N</td>
 						<td>
@@ -94,6 +102,13 @@
 							</table>
 						</td>
 					</tr>
+					<tr>
+						<td>backgroundColor</td>
+						<td class="text-center">N</td>
+						<td>
+							<div>設定iframe中body背景色，預設為#FFFFFF(白色)</div>
+						</td>
+					</tr>
 				</tbody>
 			</table>
 		</div>
@@ -111,7 +126,7 @@
 		</div>
 		<div class="step">
 			<h4 class="mb-15">呼叫 <span class="text-red">NewebPaySDK.getPrime()</span> 取得Prime</h4>
-			<p>將卡號欄位填寫完畢後，於送出交易前呼叫 <span class="text-red">NewebPaySDK.getPrime()</span> 並帶入 <span class="text-red">HashKey</span> 及 <span class="text-red">Env</span> 取得Prime。</p>
+			<p>將卡號欄位填寫完畢後，於送出交易前呼叫 <span class="text-red">NewebPaySDK.getPrime()</span> 並帶入 <span class="text-red">Env</span> 及 <span class="text-red">HashKey</span> 取得Prime。</p>
 			<div class="code">
 				<img src="img/06.png" alt="取得Prime">
 			</div>
@@ -124,18 +139,18 @@
 						<td class="th">描述</td>
 					</tr>
 					<tr>
-						<td>HashKey</td>
-						<td class="text-center">Y</td>
-						<td>
-							<div>透過藍新金流註冊並建立商店後，取得商店之HashKey</div>
-						</td>
-					</tr>
-					<tr>
 						<td>Env</td>
 						<td class="text-center">Y</td>
 						<td>
 							<div>測試階段請帶入 <span class="text-red">test</span></div>
 							<div>生產階段請帶入 <span class="text-red">production</span></div>
+						</td>
+					</tr>
+					<tr>
+						<td>HashKey</td>
+						<td class="text-center">Y</td>
+						<td>
+							<div>透過藍新金流註冊並建立商店後，取得商店之HashKey</div>
 						</td>
 					</tr>
 				</tbody>
