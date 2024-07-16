@@ -65,6 +65,7 @@ export default {
         showCvcError:false,
         inputStyleObj:{},
         titleStyleObj:{},
+        backgroundColor:''
     }),
     components:{
         expireInput,
@@ -166,6 +167,10 @@ export default {
                 });
             }             
         },
+        //設定背景色
+        setBackgroundStyle(backgroundColor){
+            document.getElementsByTagName('body')[0].style.backgroundColor = backgroundColor;
+        },
         //有傳入字體樣式時，判斷為隱碼時切換字體
         setFontFamily(){ 
             let input1 = document.getElementById('card1');
@@ -238,6 +243,11 @@ export default {
                 if(msgData.titleStyle){
                     this.titleStyleObj = msgData.titleStyle;
                 }
+
+                //設定背景
+                if(msgData.backgroundColor){
+                    this.backgroundColor = msgData.backgroundColor;
+                }
             }
             this.$nextTick(() => {
                 if(Object.keys(this.inputStyleObj).length){
@@ -246,6 +256,10 @@ export default {
 
                 if(Object.keys(this.titleStyleObj).length){
                     this.setTitleStyle(this.titleStyleObj);
+                }
+
+                if(this.backgroundColor.trim()){
+                    this.setBackgroundStyle(this.backgroundColor);
                 }
             })
         });
@@ -258,6 +272,10 @@ export default {
 </script>
 
 <style lang="scss">
+    body{
+        background-color:#FFFFFF;
+    }
+
     .field_div{
         display:flex;
     }
