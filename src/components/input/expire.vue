@@ -1,5 +1,5 @@
 <template>
-        <input class="block border-2 border-gray-600 rounded
+        <input type="tel" class="block border-2 border-gray-600 rounded
         py-1 px-1 text-blue-nwp leading-tight font-semibold focus:outline-none focus:border-gray-800"
         id="expireDateInput"
         :placeholder="placeholder.creditLimit"

@@ -1,5 +1,5 @@
 <template>
-    <input class="inline-block border-2 border-gray-600 rounded
+    <input type="tel" class="inline-block border-2 border-gray-600 rounded
         py-1 px-2 text-blue-nwp leading-tight font-semibold hideInputTextCss focus:outline-none focus:border-gray-800" 
         id="cvcNumberInput"
         v-model="inputVal"

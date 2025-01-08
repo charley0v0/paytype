@@ -40,6 +40,7 @@ import cvc from '@/assets/image/credit.png';
 
 export default {
     data:() =>({
+        bodyHeight:0,
         cvcImg:cvc,
         creditLimit:'',
         hashKey:'',
@@ -65,7 +66,8 @@ export default {
         showCvcError:false,
         inputStyleObj:{},
         titleStyleObj:{},
-        backgroundColor:''
+        backgroundColor:'',
+        minHeight:'400'
     }),
     components:{
         expireInput,
@@ -99,7 +101,7 @@ export default {
                 })
                 .then(response => {
                     //將回傳參數傳遞到父頁面
-                    window.parent.postMessage(response.data,parentUrl);               
+                    window.parent.postMessage({ type:'response' ,message:response.data,parentUrl});               
                 })
                 .catch(error => {
                     console.error('Error:', error);
@@ -171,6 +173,11 @@ export default {
         setBackgroundStyle(backgroundColor){
             document.getElementsByTagName('body')[0].style.backgroundColor = backgroundColor;
         },
+        //設定頁面高度
+        setMinHeight(minHeight){
+            document.getElementsByTagName('body')[0].style.minHeight  = `${minHeight}px`;
+            document.getElementById('app').style.minHeight  = `${minHeight}px`;
+        },
         //有傳入字體樣式時，判斷為隱碼時切換字體
         setFontFamily(){ 
             let input1 = document.getElementById('card1');
@@ -215,6 +222,10 @@ export default {
         checkNumber(){
             this.showNumberError = this.submitData.PN.length != 16;
             return !this.showNumberError;
+        },
+        //頁面高度變更時回傳高度
+        sendHeightToParent(){
+            window.parent.postMessage({ type:'iframeHeight' ,message:document.body.scrollHeight});
         }
     },
     watch:{
@@ -248,6 +259,11 @@ export default {
                 if(msgData.backgroundColor){
                     this.backgroundColor = msgData.backgroundColor;
                 }
+
+                //設定最小高度
+                if(msgData.minHeight){
+                    this.minHeight = msgData.minHeight;
+                }
             }
             this.$nextTick(() => {
                 if(Object.keys(this.inputStyleObj).length){
@@ -261,11 +277,37 @@ export default {
                 if(this.backgroundColor.trim()){
                     this.setBackgroundStyle(this.backgroundColor);
                 }
+
+                if(this.minHeight){
+                    this.setMinHeight(this.minHeight);
+                }
             })
+        });
+
+        window.addEventListener('resize', this.sendHeightToParent);
+    },
+    mounted(){
+        this.sendHeightToParent(); // 初始化高度
+        // 創建 MutationObserver
+        this.observer = new MutationObserver(() => {
+            this.sendHeightToParent();
+        });
+
+        // 開始監聽 body 的變化
+        this.observer.observe(document.body, {
+            attributes: true,
+            childList: true,
+            subtree: true,
         });
     },
     updated(){
-        this.submitData.EDate = this.creditLimit.split('/').join('');
+        this.submitData.EDate = this.creditLimit.split('/').join(''); 
+    },
+    beforeDestroy() {
+        // 停止監聽
+        if (this.observer) {
+            this.observer.disconnect();
+        }
     },
 }
 
